@@ -3,4 +3,5 @@ executable("tungsten") {
     "main.cc",
   ]
   configs += [ "//build/config/win:windowed" ]
+  configs -= [ "//build/config/win:console" ]
 }
