@@ -1,0 +1,7 @@
+# This is the root GN build file.
+
+group("root") {
+  deps = [
+    "//exe:tungsten",
+  ]
+}

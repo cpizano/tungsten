@@ -1,0 +1,6 @@
+executable("tungsten") {
+  sources = [
+    "main.cc",
+  ]
+  configs += [ "//build/config/win:windowed" ]
+}
