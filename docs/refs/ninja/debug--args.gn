@@ -1,0 +1,8 @@
+# Build arguments go here.
+# See "gn args <out_dir> --list" for available build arguments.
+
+is_component_build = false
+is_debug = true
+is_official_build = false
+build_cpu_arch = "x64"
+cpu_arch = "x64"
