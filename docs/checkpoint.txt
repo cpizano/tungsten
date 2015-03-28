@@ -1,0 +1,32 @@
+### progress log ###
+
+##cpu checkpoint 0: 3/27/15  5:30pm
+got chromium tree and sgraham/nope in shape, ready to copy
+
+##cpu checkpoint 1: 3/27/15  7:40pm
+116 Files, 86 Folders just so gn does something other than exploding. It needs gyp (!)
+
+.\buidtools\win\gn.exe gen out\debug
+1- ERROR at //BUILD.gn:3:1: Unable to load "F:/src/tungsten/build/toolchain/win/BUILD.gn
+2- ERROR at //build/config/BUILD.gn:9:1: Unable to load "F:/src/tungsten/build/module_args/v8.gni"
+3- ERROR at //build/config/compiler/BUILD.gn:16:1: Unable to load "F:/src/tungsten/build/toolchain/ccache.gni"
+4- ERROR at //build/config/BUILD.gn:9:1: Unable to load "F:/src/tungsten/build/module_args/v8.gni"
+5- IOError: [Errno 2] No such file or directory: 'F:\\src\\tungsten\\build\\toolchain_vs2013.hash'
+6- f:/depot_tools/python276_bin/python.exe: can't open file 'F:/src/tungsten/build/win_is_xtree_patched.py'
+7- ERROR at //build/config/compiler/BUILD.gn:1088:5: Unable to load "F:/src/tungsten/build/toolchain/goma.gni"
+8- f:/depot_tools/python276_bin/python.exe: can't open file 'F:/src/tungsten/build/toolchain/get_concurrent_links.py
+
+##cpu checkpoint 2: 3/27/15 9:10pm
+.\buidtools\win\gn.exe gen out\debug
+Done. Wrote 35 targets from 16 files in 701ms
+
+F:\src\tungsten [master +10 ~0 -0 !]> ninja -C out\debug
+ninja: Entering directory `out\debug'
+ninja: error: '../../exe/main.cc', needed by 'obj/exe/tungsten.main.obj', missing and no known rule to make it
+
+##cpu checkpoint 3: 3/27/16  4:29am
+Given an empty winmain in main.cc it builds: 
+  ninja -C out\debug
+
+However tungsten.exe is 592KB !!
+
