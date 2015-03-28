@@ -1,9 +1,9 @@
 ### progress log ###
 
-##cpu checkpoint 0: 3/27/15  5:30pm
+##cpu checkpoint 0: 3/27/15 5:30pm
 got chromium tree and sgraham/nope in shape, ready to copy
 
-##cpu checkpoint 1: 3/27/15  7:40pm
+##cpu checkpoint 1: 3/27/15 7:40pm
 116 Files, 86 Folders just so gn does something other than exploding. It needs gyp (!)
 
 .\buidtools\win\gn.exe gen out\debug
@@ -24,9 +24,30 @@ F:\src\tungsten [master +10 ~0 -0 !]> ninja -C out\debug
 ninja: Entering directory `out\debug'
 ninja: error: '../../exe/main.cc', needed by 'obj/exe/tungsten.main.obj', missing and no known rule to make it
 
-##cpu checkpoint 3: 3/27/16  4:29am
+##cpu checkpoint 3: 3/28/15 4:29am
 Given an empty winmain in main.cc it builds: 
   ninja -C out\debug
 
 However tungsten.exe is 592KB !!
 
+##cpu checkpoint 4: 3/28/15 5:19am
+So far we had gone with gn defaults, out/debug means nothing to GN, what
+matters are the defaults or much better the args.gn file at the root of the
+directory, for example to make a release one
+
+F:\src\tungsten [master]> .\buidtools\win\gn.exe gen out/release
+Done. Wrote 35 targets from 16 files in 622ms
+
+F:\src\tungsten [master]> .\buidtools\win\gn.exe args out/release
+Waiting for editor on "F:\src\tungsten\out\release\args.gn"...
+
+(in the editor type:)
+is_component_build = false
+is_debug = false
+is_official_build = false
+build_cpu_arch = "x64"
+cpu_arch = "x64"
+
+
+With that we can now ninja -C out\release and get a 74Kb tungsten exe which
+means that maybe the debug exe is the right size.
