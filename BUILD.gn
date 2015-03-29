@@ -4,5 +4,6 @@ group("root") {
   deps = [
     "//exe:tungsten",
     "//browser:browser",
+    "//base:base",
   ]
 }

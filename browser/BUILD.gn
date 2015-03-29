@@ -2,4 +2,7 @@ shared_library("browser") {
   sources = [
     "main.cc",
   ]
+  deps = [
+    "//base:base"
+  ]
 }

@@ -8,14 +8,17 @@ enum class ProcessType : int {
   kBrowser,
   kRenderer,
   kUtility,
+  kLast,
 };
 
+// Do not reorder.
 enum class ExitCodes : int {
   kAllOk,
   kMissingDll,
   kMissingEntryPoint,
+  kUnexpectedPType,
+  kLast,
 };
-
 
 #if defined(IS_DLL_RUNNER)
 typedef int(_stdcall *Dll_InitFn) (ProcessType ptype, void* params);
