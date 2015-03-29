@@ -12,9 +12,12 @@
 
 
 int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE prev, wchar_t* cmdline, int) {
+
+  ::OutputDebugStringW(_wpgmptr);
+
   if (std::wstring(cmdline).empty()) {
     // wbrowser.dll is not meant to be unloaded.
-    auto module = ::LoadLibrary(L"wbrowser.dll");
+    auto module = ::LoadLibraryA("wbrowser.dll");
     if (!module)
       return static_cast<int>(ExitCodes::kMissingMainDll);
     auto WRunFn = reinterpret_cast<Dll_WRunFn>(
