@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 #include <windows.h>
+
 #include "exe/main_dll.h"
 #include "base/base_exports.h"
 
-int __stdcall Dll_Init(ProcessType ptype, void* params) {
+int __stdcall Dll_WRun(ProcessType ptype, void* params) {
   Base_Init();
 
   if (ptype != ProcessType::kBrowser)

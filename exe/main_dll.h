@@ -14,16 +14,18 @@ enum class ProcessType : int {
 // Do not reorder.
 enum class ExitCodes : int {
   kAllOk,
-  kMissingDll,
+  kErrorKernel,
+  kMissingMainDll,
+  kMissingOtherDll,
   kMissingEntryPoint,
   kUnexpectedPType,
   kLast,
 };
 
 #if defined(IS_DLL_RUNNER)
-typedef int(_stdcall *Dll_InitFn) (ProcessType ptype, void* params);
-const char Dll_InitFnName[] = "?Dll_Init@@YAHW4ProcessType@@PEAX@Z";
+typedef int (_stdcall *Dll_WRunFn) (ProcessType ptype, void* params);
+const char Dll_WRunFnName[] = "?Dll_WRun@@YAHW4ProcessType@@PEAX@Z";
 #else
 __declspec(dllexport)
-int __stdcall Dll_Init(ProcessType ptype, void* params);
+int __stdcall Dll_WRun(ProcessType ptype, void* params);
 #endif

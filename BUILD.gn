@@ -3,7 +3,7 @@
 group("root") {
   deps = [
     "//exe:tungsten",
-    "//browser:browser",
+    "//browser:wbrowser",
     "//base:base",
   ]
 }

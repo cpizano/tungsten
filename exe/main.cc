@@ -13,15 +13,16 @@
 
 int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE prev, wchar_t* cmdline, int) {
   if (std::wstring(cmdline).empty()) {
-    auto module = ::LoadLibrary(L"browser.dll");
+    // wbrowser.dll is not meant to be unloaded.
+    auto module = ::LoadLibrary(L"wbrowser.dll");
     if (!module)
-      return static_cast<int>(ExitCodes::kMissingDll);
-    auto InitFn = reinterpret_cast<Dll_InitFn>(
-        ::GetProcAddress(module, Dll_InitFnName));
-    if (!InitFn)
+      return static_cast<int>(ExitCodes::kMissingMainDll);
+    auto WRunFn = reinterpret_cast<Dll_WRunFn>(
+        ::GetProcAddress(module, Dll_WRunFnName));
+    if (!WRunFn)
       return static_cast<int>(ExitCodes::kMissingEntryPoint);
     // Call into the browser DLL.
-    return InitFn(ProcessType::kBrowser, nullptr);
+    return WRunFn(ProcessType::kBrowser, nullptr);
   }
 
   return static_cast<int>(ExitCodes::kAllOk);

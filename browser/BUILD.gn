@@ -1,4 +1,4 @@
-shared_library("browser") {
+shared_library("wbrowser") {
   sources = [
     "main.cc",
   ]
