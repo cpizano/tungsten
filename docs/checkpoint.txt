@@ -51,3 +51,17 @@ cpu_arch = "x64"
 
 With that we can now ninja -C out\release and get a 74Kb tungsten exe which
 means that maybe the debug exe is the right size.
+
+##cpu checkpoint 5: 3/29/15 9:49am
+There is base.dll and and browser.dll depends on it via a static import. It
+all seems to work from the debug directory.
+Now it is a good time to think of the install scheme. The best scheme I can think of
+is using hardlinks: 
+fsutil hardlink <instdir>\tungsten\tungsten.exe <instdir>\tungsten\app\v0.0.0.1\tungsten.exe
+then the standard shortcut points to the hardlink.
+they don't require admin permission. Experimenting it works but tugnsten as-is cannot find
+browser.dll because the actual current dir is that of the hardlink so tungsten does not find
+browser but the loader is clever and finds <system32>\browser (!) which does not have the
+expected entrypoint.
+
+
