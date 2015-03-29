@@ -4,7 +4,24 @@
 
 #include <windows.h>
 
-int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE prev, wchar_t*, int) {
+#include <string>
 
-  return 0;
+#define IS_DLL_RUNNER 1
+#include "exe/main_dll.h"
+
+
+int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE prev, wchar_t* cmdline, int) {
+  if (std::wstring(cmdline).empty()) {
+    auto module = ::LoadLibrary(L"browser.dll");
+    if (!module)
+      return static_cast<int>(ExitCodes::kMissingDll);
+    auto InitFn = reinterpret_cast<Dll_InitFn>(
+        ::GetProcAddress(module, Dll_InitFnName));
+    if (!InitFn)
+      return static_cast<int>(ExitCodes::kMissingEntryPoint);
+    // Call into the browser DLL.
+    return InitFn(ProcessType::kBrowser, nullptr);
+  }
+
+  return static_cast<int>(ExitCodes::kAllOk);
 }

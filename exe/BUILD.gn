@@ -1,6 +1,7 @@
 executable("tungsten") {
   sources = [
     "main.cc",
+    "main_dll.h",
   ]
   configs += [ "//build/config/win:windowed" ]
   configs -= [ "//build/config/win:console" ]

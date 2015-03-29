@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 #include <windows.h>
+#include "exe/main_dll.h"
 
-__declspec(dllexport)
-int __stdcall Init(wchar_t*) {
+int __stdcall Dll_Init(ProcessType ptype, void* params) {
 
   return 0;
 }
