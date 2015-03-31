@@ -13,5 +13,6 @@ int __stdcall Dll_WRun(ProcessType ptype, void* params) {
   if (ptype != ProcessType::kBrowser)
     return static_cast<int>(ExitCodes::kUnexpectedPType);
 
+  ::OutputDebugStringA("dll_run done");
   return 0;
 }
