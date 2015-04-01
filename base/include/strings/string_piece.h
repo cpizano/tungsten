@@ -29,13 +29,8 @@
 #define BASE_STRINGS_STRING_PIECE_H_
 
 #include <stddef.h>
-
-#include <iosfwd>
 #include <string>
 
-#include "base/base_export.h"
-#include "base/basictypes.h"
-#include "base/containers/hash_tables.h"
 #include "base/strings/string16.h"
 
 namespace base {
@@ -43,113 +38,6 @@ namespace base {
 template <typename STRING_TYPE> class BasicStringPiece;
 typedef BasicStringPiece<std::string> StringPiece;
 typedef BasicStringPiece<string16> StringPiece16;
-
-// internal --------------------------------------------------------------------
-
-// Many of the StringPiece functions use different implementations for the
-// 8-bit and 16-bit versions, and we don't want lots of template expansions in
-// this (very common) header that will slow down compilation.
-//
-// So here we define overloaded functions called by the StringPiece template.
-// For those that share an implementation, the two versions will expand to a
-// template internal to the .cc file.
-namespace internal {
-
-BASE_EXPORT void CopyToString(const StringPiece& self, std::string* target);
-BASE_EXPORT void CopyToString(const StringPiece16& self, string16* target);
-
-BASE_EXPORT void AppendToString(const StringPiece& self, std::string* target);
-BASE_EXPORT void AppendToString(const StringPiece16& self, string16* target);
-
-BASE_EXPORT size_t copy(const StringPiece& self,
-                        char* buf,
-                        size_t n,
-                        size_t pos);
-BASE_EXPORT size_t copy(const StringPiece16& self,
-                        char16* buf,
-                        size_t n,
-                        size_t pos);
-
-BASE_EXPORT size_t find(const StringPiece& self,
-                        const StringPiece& s,
-                        size_t pos);
-BASE_EXPORT size_t find(const StringPiece16& self,
-                        const StringPiece16& s,
-                        size_t pos);
-BASE_EXPORT size_t find(const StringPiece& self,
-                        char c,
-                        size_t pos);
-BASE_EXPORT size_t find(const StringPiece16& self,
-                        char16 c,
-                        size_t pos);
-
-BASE_EXPORT size_t rfind(const StringPiece& self,
-                         const StringPiece& s,
-                         size_t pos);
-BASE_EXPORT size_t rfind(const StringPiece16& self,
-                         const StringPiece16& s,
-                         size_t pos);
-BASE_EXPORT size_t rfind(const StringPiece& self,
-                         char c,
-                         size_t pos);
-BASE_EXPORT size_t rfind(const StringPiece16& self,
-                         char16 c,
-                         size_t pos);
-
-BASE_EXPORT size_t find_first_of(const StringPiece& self,
-                                 const StringPiece& s,
-                                 size_t pos);
-BASE_EXPORT size_t find_first_of(const StringPiece16& self,
-                                 const StringPiece16& s,
-                                 size_t pos);
-
-BASE_EXPORT size_t find_first_not_of(const StringPiece& self,
-                                     const StringPiece& s,
-                                     size_t pos);
-BASE_EXPORT size_t find_first_not_of(const StringPiece16& self,
-                                     const StringPiece16& s,
-                                     size_t pos);
-BASE_EXPORT size_t find_first_not_of(const StringPiece& self,
-                                     char c,
-                                     size_t pos);
-BASE_EXPORT size_t find_first_not_of(const StringPiece16& self,
-                                     char16 c,
-                                     size_t pos);
-
-BASE_EXPORT size_t find_last_of(const StringPiece& self,
-                                const StringPiece& s,
-                                size_t pos);
-BASE_EXPORT size_t find_last_of(const StringPiece16& self,
-                                const StringPiece16& s,
-                                size_t pos);
-BASE_EXPORT size_t find_last_of(const StringPiece& self,
-                                char c,
-                                size_t pos);
-BASE_EXPORT size_t find_last_of(const StringPiece16& self,
-                                char16 c,
-                                size_t pos);
-
-BASE_EXPORT size_t find_last_not_of(const StringPiece& self,
-                                    const StringPiece& s,
-                                    size_t pos);
-BASE_EXPORT size_t find_last_not_of(const StringPiece16& self,
-                                    const StringPiece16& s,
-                                    size_t pos);
-BASE_EXPORT size_t find_last_not_of(const StringPiece16& self,
-                                    char16 c,
-                                    size_t pos);
-BASE_EXPORT size_t find_last_not_of(const StringPiece& self,
-                                    char c,
-                                    size_t pos);
-
-BASE_EXPORT StringPiece substr(const StringPiece& self,
-                               size_t pos,
-                               size_t n);
-BASE_EXPORT StringPiece16 substr(const StringPiece16& self,
-                                 size_t pos,
-                                 size_t n);
-
-}  // namespace internal
 
 // BasicStringPiece ------------------------------------------------------------
 
@@ -363,7 +251,7 @@ extern template class BASE_EXPORT BasicStringPiece<string16>;
 
 // StingPiece operators --------------------------------------------------------
 
-BASE_EXPORT bool operator==(const StringPiece& x, const StringPiece& y);
+bool operator==(const StringPiece& x, const StringPiece& y);
 
 inline bool operator!=(const StringPiece& x, const StringPiece& y) {
   return !(x == y);
@@ -418,41 +306,6 @@ inline bool operator>=(const StringPiece16& x, const StringPiece16& y) {
   return !(x < y);
 }
 
-BASE_EXPORT std::ostream& operator<<(std::ostream& o,
-                                     const StringPiece& piece);
-
 }  // namespace base
-
-// Hashing ---------------------------------------------------------------------
-
-// We provide appropriate hash functions so StringPiece and StringPiece16 can
-// be used as keys in hash sets and maps.
-
-// This hash function is copied from base/containers/hash_tables.h. We don't
-// use the ones already defined for string and string16 directly because it
-// would require the string constructors to be called, which we don't want.
-#define HASH_STRING_PIECE(StringPieceType, string_piece)                \
-  std::size_t result = 0;                                               \
-  for (StringPieceType::const_iterator i = string_piece.begin();        \
-       i != string_piece.end(); ++i)                                    \
-    result = (result * 131) + *i;                                       \
-  return result;                                                        \
-
-namespace BASE_HASH_NAMESPACE {
-
-template<>
-struct hash<base::StringPiece> {
-  std::size_t operator()(const base::StringPiece& sp) const {
-    HASH_STRING_PIECE(base::StringPiece, sp);
-  }
-};
-template<>
-struct hash<base::StringPiece16> {
-  std::size_t operator()(const base::StringPiece16& sp16) const {
-    HASH_STRING_PIECE(base::StringPiece16, sp16);
-  }
-};
-
-}  // namespace BASE_HASH_NAMESPACE
 
 #endif  // BASE_STRINGS_STRING_PIECE_H_
