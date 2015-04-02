@@ -10,8 +10,6 @@
 #include "exe/main_dll.h"
 #undef IS_DLL_RUNNER
 
-#include "exe/git_tag_version.h"
-
 std::wstring GetRootPath(const std::wstring& full_path) {
   auto pos = full_path.find_last_of(L'\\');
   return full_path.substr(0, pos);

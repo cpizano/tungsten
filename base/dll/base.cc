@@ -5,7 +5,7 @@
 #include <windows.h>
 
 #define BASE_IMPL 1
-#include "base/base_exports.h"
+#include "base/dll/base_exports.h"
 
 int __stdcall Base_Init() {
 

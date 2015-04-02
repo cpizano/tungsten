@@ -1,6 +1,6 @@
 shared_library("base") {
   sources = [
-    "base.cc",
-    "base_exports.h",
+    "dll/base.cc",
+    "dll/base_exports.h",
   ]
 }
