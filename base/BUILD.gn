@@ -9,6 +9,9 @@ static_library("base") {
   sources = [
     "init.h",
     "init.cc",
+    "strings/string16.h",
+    "strings/string_piece.cc",
+    "strings/string_piece.h",
   ]
   
   deps = [":base_dyn"]

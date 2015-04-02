@@ -29,8 +29,7 @@
 #include <stdio.h>
 #include <string>
 
-#include "base/base_export.h"
-#include "base/basictypes.h"
+#include "build/build_config.h"
 
 #if defined(WCHAR_T_IS_UTF16)
 

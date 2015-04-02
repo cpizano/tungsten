@@ -39,6 +39,114 @@ template <typename STRING_TYPE> class BasicStringPiece;
 typedef BasicStringPiece<std::string> StringPiece;
 typedef BasicStringPiece<string16> StringPiece16;
 
+// internal --------------------------------------------------------------------
+
+// Many of the StringPiece functions use different implementations for the
+// 8-bit and 16-bit versions, and we don't want lots of template expansions in
+// this (very common) header that will slow down compilation.
+//
+// So here we define overloaded functions called by the StringPiece template.
+// For those that share an implementation, the two versions will expand to a
+// template internal to the .cc file.
+namespace internal {
+
+void CopyToString(const StringPiece& self, std::string* target);
+void CopyToString(const StringPiece16& self, string16* target);
+
+void AppendToString(const StringPiece& self, std::string* target);
+void AppendToString(const StringPiece16& self, string16* target);
+
+size_t copy(const StringPiece& self,
+            char* buf,
+            size_t n,
+            size_t pos);
+size_t copy(const StringPiece16& self,
+            char16* buf,
+            size_t n,
+            size_t pos);
+
+size_t find(const StringPiece& self,
+            const StringPiece& s,
+            size_t pos);
+size_t find(const StringPiece16& self,
+            const StringPiece16& s,
+            size_t pos);
+size_t find(const StringPiece& self,
+            char c,
+            size_t pos);
+size_t find(const StringPiece16& self,
+            char16 c,
+            size_t pos);
+
+size_t rfind(const StringPiece& self,
+             const StringPiece& s,
+             size_t pos);
+size_t rfind(const StringPiece16& self,
+             const StringPiece16& s,
+             size_t pos);
+size_t rfind(const StringPiece& self,
+             char c,
+             size_t pos);
+size_t rfind(const StringPiece16& self,
+             char16 c,
+             size_t pos);
+
+size_t find_first_of(const StringPiece& self,
+                     const StringPiece& s,
+                     size_t pos);
+size_t find_first_of(const StringPiece16& self,
+                     const StringPiece16& s,
+                     size_t pos);
+
+size_t find_first_not_of(const StringPiece& self,
+                         const StringPiece& s,
+                         size_t pos);
+size_t find_first_not_of(const StringPiece16& self,
+                         const StringPiece16& s,
+                         size_t pos);
+size_t find_first_not_of(const StringPiece& self,
+                                     char c,
+                                     size_t pos);
+size_t find_first_not_of(const StringPiece16& self,
+                         char16 c,
+                         size_t pos);
+
+size_t find_last_of(const StringPiece& self,
+                    const StringPiece& s,
+                    size_t pos);
+size_t find_last_of(const StringPiece16& self,
+                    const StringPiece16& s,
+                    size_t pos);
+size_t find_last_of(const StringPiece& self,
+                    char c,
+                    size_t pos);
+size_t find_last_of(const StringPiece16& self,
+                    char16 c,
+                    size_t pos);
+
+size_t find_last_not_of(const StringPiece& self,
+                        const StringPiece& s,
+                        size_t pos);
+size_t find_last_not_of(const StringPiece16& self,
+                        const StringPiece16& s,
+                        size_t pos);
+size_t find_last_not_of(const StringPiece16& self,
+                        char16 c,
+                        size_t pos);
+size_t find_last_not_of(const StringPiece& self,
+                        char c,
+                        size_t pos);
+
+StringPiece substr(const StringPiece& self,
+                   size_t pos,
+                   size_t n);
+StringPiece16 substr(const StringPiece16& self,
+                     size_t pos,
+                     size_t n);
+
+}  // namespace internal
+
+
 // BasicStringPiece ------------------------------------------------------------
 
 // Defines the types, methods, operators, and data members common to both
