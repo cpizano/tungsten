@@ -1,6 +1,15 @@
-shared_library("base") {
+shared_library("base_dyn") {
   sources = [
     "dll/base.cc",
     "dll/base_exports.h",
   ]
+}
+
+static_library("base") {
+  sources = [
+    "init.h",
+    "init.cc",
+  ]
+  
+  deps = [":base_dyn"]
 }

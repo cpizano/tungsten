@@ -5,10 +5,10 @@
 #include <windows.h>
 
 #include "exe/main_dll.h"
-#include "base/dll/base_exports.h"
+#include "base/init.h"
 
 int __stdcall Dll_WRun(ProcessType ptype, void* params) {
-  Base_Init();
+  base::Init();
 
   if (ptype != ProcessType::kBrowser)
     return static_cast<int>(ExitCodes::kUnexpectedPType);
