@@ -4,6 +4,8 @@
 
 #include "base/strings/utf_string_conversions.h"
 
+#include <stdint.h>
+
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversion_utils.h"
@@ -24,9 +26,9 @@ bool ConvertUnicode(const SRC_CHAR* src,
                     DEST_STRING* output) {
   // ICU requires 32-bit numbers.
   bool success = true;
-  int32 src_len32 = static_cast<int32>(src_len);
-  for (int32 i = 0; i < src_len32; i++) {
-    uint32 code_point;
+  int32_t src_len32 = static_cast<int32_t>(src_len);
+  for (int32_t i = 0; i < src_len32; i++) {
+    uint32_t code_point;
     if (ReadUnicodeCharacter(src, src_len32, &i, &code_point)) {
       WriteUnicodeCharacter(code_point, output);
     } else {
@@ -210,12 +212,12 @@ std::string UTF16ToUTF8(const string16& utf16) {
 #endif
 
 string16 ASCIIToUTF16(const StringPiece& ascii) {
-  DCHECK(IsStringASCII(ascii)) << ascii;
+//$$  DCHECK(IsStringASCII(ascii)) << ascii;
   return string16(ascii.begin(), ascii.end());
 }
 
 std::string UTF16ToASCII(const string16& utf16) {
-  DCHECK(IsStringASCII(utf16)) << UTF16ToUTF8(utf16);
+//$$  DCHECK(IsStringASCII(utf16)) << UTF16ToUTF8(utf16);
   return std::string(utf16.begin(), utf16.end());
 }
 

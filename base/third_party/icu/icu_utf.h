@@ -216,13 +216,13 @@ UChar32 utf8_nextCharSafeBody(const uint8_t *s, int32_t *pi, int32_t length, UCh
  * @stable ICU 2.4
  */
 #define CBU8_APPEND_UNSAFE(s, i, c) { \
-    if((uint32)(c)<=0x7f) { \
+    if((uint32_t)(c)<=0x7f) { \
         (s)[(i)++]=(uint8_t)(c); \
     } else { \
-        if((uint32)(c)<=0x7ff) { \
+        if((uint32_t)(c)<=0x7ff) { \
             (s)[(i)++]=(uint8_t)(((c)>>6)|0xc0); \
         } else { \
-            if((uint32)(c)<=0xffff) { \
+            if((uint32_t)(c)<=0xffff) { \
                 (s)[(i)++]=(uint8_t)(((c)>>12)|0xe0); \
             } else { \
                 (s)[(i)++]=(uint8_t)(((c)>>18)|0xf0); \
@@ -326,7 +326,7 @@ UChar32 utf8_nextCharSafeBody(const uint8_t *s, int32_t *pi, int32_t length, UCh
  * @return 1 or 2
  * @stable ICU 2.4
  */
-#define CBU16_LENGTH(c) ((uint32)(c)<=0xffff ? 1 : 2)
+#define CBU16_LENGTH(c) ((uint32_t)(c)<=0xffff ? 1 : 2)
 
 /**
  * The maximum number of 16-bit code units per Unicode code point (U+0000..U+10ffff).
@@ -357,7 +357,7 @@ UChar32 utf8_nextCharSafeBody(const uint8_t *s, int32_t *pi, int32_t length, UCh
 #define CBU16_NEXT(s, i, length, c) { \
     (c)=(s)[(i)++]; \
     if(CBU16_IS_LEAD(c)) { \
-        uint16 __c2; \
+        uint16_t __c2; \
         if((i)<(length) && CBU16_IS_TRAIL(__c2=(s)[(i)])) { \
             ++(i); \
             (c)=CBU16_GET_SUPPLEMENTARY((c), __c2); \
@@ -379,11 +379,11 @@ UChar32 utf8_nextCharSafeBody(const uint8_t *s, int32_t *pi, int32_t length, UCh
  * @stable ICU 2.4
  */
 #define CBU16_APPEND_UNSAFE(s, i, c) { \
-    if((uint32)(c)<=0xffff) { \
-        (s)[(i)++]=(uint16)(c); \
+    if((uint32_t)(c)<=0xffff) { \
+        (s)[(i)++]=(uint16_t)(c); \
     } else { \
-        (s)[(i)++]=(uint16)(((c)>>10)+0xd7c0); \
-        (s)[(i)++]=(uint16)(((c)&0x3ff)|0xdc00); \
+        (s)[(i)++]=(uint16_t)(((c)>>10)+0xd7c0); \
+        (s)[(i)++]=(uint16_t)(((c)&0x3ff)|0xdc00); \
     } \
 }
 
