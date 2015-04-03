@@ -17,7 +17,6 @@
 #ifndef BASE_THIRD_PARTY_ICU_ICU_UTF_H_
 #define BASE_THIRD_PARTY_ICU_ICU_UTF_H_
 
-//$$ #include "base/basictypes.h"
 #include <stdint.h>
 
 namespace base_icu {
