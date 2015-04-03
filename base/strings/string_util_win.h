@@ -40,7 +40,7 @@ inline int vsnprintf(char* buffer, size_t size,
 
 inline int vswprintf(wchar_t* buffer, size_t size,
                      const wchar_t* format, va_list arguments) {
-//$$  DCHECK(IsWprintfFormatPortable(format));
+  CORE_DCHECK(IsWprintfFormatPortable(format));
   int length = _vsnwprintf_s(buffer, size, size - 1, format, arguments);
   if (length < 0)
     return _vscwprintf(format, arguments);

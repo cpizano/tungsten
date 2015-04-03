@@ -9,6 +9,7 @@
 
 // These includes are just for the *Hack functions, and should be removed
 // when those functions are removed.
+#include "base/core_check.h"
 #include "base/macros.h"
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
@@ -413,7 +414,7 @@ FilePath FilePath::InsertBeforeExtension(const StringType& suffix) const {
 
 FilePath FilePath::InsertBeforeExtensionASCII(const StringPiece& suffix)
     const {
-//$$  DCHECK(IsStringASCII(suffix));
+  CORE_DCHECK(IsStringASCII(suffix));
 #if defined(OS_WIN)
   return InsertBeforeExtension(ASCIIToUTF16(suffix.as_string()));
 #elif defined(OS_POSIX)
@@ -475,7 +476,7 @@ FilePath FilePath::Append(const StringType& component) const {
     appended = &without_nuls;
   }
 
-//$$  DCHECK(!IsPathAbsolute(*appended));
+  CORE_DCHECK(!IsPathAbsolute(*appended));
 
   if (path_.compare(kCurrentDirectory) == 0) {
     // Append normally doesn't do any normalization, but as a special case,
@@ -514,7 +515,7 @@ FilePath FilePath::Append(const FilePath& component) const {
 }
 
 FilePath FilePath::AppendASCII(const StringPiece& component) const {
-//$$  DCHECK(base::IsStringASCII(component));
+  CORE_DCHECK(base::IsStringASCII(component));
 #if defined(OS_WIN)
   return Append(ASCIIToUTF16(component.as_string()));
 #elif defined(OS_POSIX)
@@ -1110,7 +1111,7 @@ inline int HFSReadNextNonIgnorableCodepoint(const char* string,
     // CBU8_NEXT returns a value < 0 in error cases. For purposes of string
     // comparison, we just use that value and flag it with DCHECK.
     CBU8_NEXT(string, *index, length, codepoint);
-//$$    DCHECK_GT(codepoint, 0);
+    CORE_DCHECK(codepoint > 0);
     if (codepoint > 0) {
       // Check if there is a subtable for this upper byte.
       int lookup_offset = lower_case_table[codepoint >> 8];
@@ -1145,8 +1146,8 @@ int FilePath::HFSFastUnicodeCompare(const StringType& string1,
     if (codepoint1 != codepoint2)
       return (codepoint1 < codepoint2) ? -1 : 1;
     if (codepoint1 == 0) {
-//$$      DCHECK_EQ(index1, length1);
-//$$      DCHECK_EQ(index2, length2);
+      CORE_DCHECK(index1 == length1);
+      CORE_DCHECK(index2 == length2);
       return 0;
     }
   }
@@ -1165,7 +1166,7 @@ StringType FilePath::GetHFSDecomposedForm(const StringType& string) {
   // will overestimate the required space. The return value also already
   // includes the space needed for a terminating 0.
   CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(cfstring);
-//$$  DCHECK_GT(length, 0);  
+  CORE_DCHECK(length > 0);  
   // should be at least 1 for the 0-terminator.
 
   // Reserve enough space for CFStringGetFileSystemRepresentation to write into.
@@ -1271,8 +1272,6 @@ FilePath FilePath::NormalizePathSeparators() const {
 
 FilePath FilePath::NormalizePathSeparatorsTo(CharType separator) const {
 #if defined(FILE_PATH_USES_WIN_SEPARATORS)
-//$$  DCHECK_NE(kSeparators + kSeparatorsLength,
-//$$            std::find(kSeparators, kSeparators + kSeparatorsLength, separator));
   StringType copy = path_;
   for (size_t i = 0; i < kSeparatorsLength; ++i) {
     std::replace(copy.begin(), copy.end(), kSeparators[i], separator);

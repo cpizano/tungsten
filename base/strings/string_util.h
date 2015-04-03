@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "base/compiler_specific.h"
+#include "base/core_check.h"
 #include "base/strings/string16.h"
 #include "base/strings/string_piece.h"  // For implicit conversions.
 
@@ -360,7 +361,7 @@ inline bool IsHexDigit(Char c) {
 
 template <typename Char>
 inline char HexDigitToInt(Char c) {
-//$$  DCHECK(IsHexDigit(c));
+  CORE_DCHECK(IsHexDigit(c));
   if (c >= '0' && c <= '9')
     return static_cast<char>(c - '0');
   if (c >= 'A' && c <= 'F')
@@ -433,7 +434,7 @@ void ReplaceSubstringsAfterOffset(std::string* str,
 template <class string_type>
 inline typename string_type::value_type* WriteInto(string_type* str,
                                                    size_t length_with_null) {
-//$$  DCHECK_GT(length_with_null, 1u);
+  CORE_DCHECK(length_with_null > 1u);
   str->reserve(length_with_null);
   str->resize(length_with_null - 1);
   return &((*str)[0]);

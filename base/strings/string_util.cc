@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "base/core_check.h"
 #include "base/macros.h"
 #include "base/strings/utf_string_conversion_utils.h"
 #include "base/strings/utf_string_conversions.h"
@@ -249,7 +250,7 @@ void TruncateUTF8ToByteSize(const std::string& input,
     *output = input;
     return;
   }
-//$$  DCHECK_LE(byte_size, static_cast<uint32_t>(kint32max));
+  CORE_DCHECK(byte_size <= static_cast<uint32_t>(0xFFFFFFFF));
   // Note: This cast is necessary because CBU8_NEXT uses int32s.
   int32_t truncation_length = static_cast<int32_t>(byte_size);
   int32_t char_index = truncation_length - 1;
@@ -565,7 +566,7 @@ void DoReplaceSubstringsAfterOffset(StringType* str,
                                     const StringType& find_this,
                                     const StringType& replace_with,
                                     bool replace_all) {
-//$$  DCHECK(!find_this.empty());
+  CORE_DCHECK(!find_this.empty());
 
   // If the find string doesn't appear, there's nothing to do.
   offset = str->find(find_this, offset);
@@ -785,7 +786,7 @@ OutStringType DoReplaceStringPlaceholders(const FormatStringType& format_string,
     if ('$' == *i) {
       if (i + 1 != format_string.end()) {
         ++i;
-//$$        DCHECK('$' == *i || '1' <= *i) << "Invalid placeholder: " << *i;
+        CORE_DCHECK('$' == *i || '1' <= *i);
         if ('$' == *i) {
           while (i != format_string.end() && '$' == *i) {
             formatted.push_back('$');
@@ -847,7 +848,7 @@ string16 ReplaceStringPlaceholders(const string16& format_string,
   subst.push_back(a);
   string16 result = ReplaceStringPlaceholders(format_string, subst, &offsets);
 
-//$$  DCHECK_EQ(1U, offsets.size());
+  CORE_DCHECK(1U == offsets.size());
   if (offset)
     *offset = offsets[0];
   return result;

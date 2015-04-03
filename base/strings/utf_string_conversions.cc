@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 
+#include "base/core_check.h"
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversion_utils.h"
@@ -212,12 +213,12 @@ std::string UTF16ToUTF8(const string16& utf16) {
 #endif
 
 string16 ASCIIToUTF16(const StringPiece& ascii) {
-//$$  DCHECK(IsStringASCII(ascii)) << ascii;
+  CORE_DCHECK(IsStringASCII(ascii));
   return string16(ascii.begin(), ascii.end());
 }
 
 std::string UTF16ToASCII(const string16& utf16) {
-//$$  DCHECK(IsStringASCII(utf16)) << UTF16ToUTF8(utf16);
+  CORE_DCHECK(IsStringASCII(utf16));
   return std::string(utf16.begin(), utf16.end());
 }
 
