@@ -9,8 +9,8 @@ static_library("base") {
   sources = [
     "init.h",
     "init.cc",
-#    "files/file_path.cc",
-#    "files/file_path.h",
+    "files/file_path.cc",
+    "files/file_path.h",
     "strings/string16.h",
     "strings/string_piece.cc",
     "strings/string_piece.h",

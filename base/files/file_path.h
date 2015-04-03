@@ -105,10 +105,10 @@
 #include <stddef.h>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
-#include "base/base_export.h"
 #include "base/compiler_specific.h"
-#include "base/containers/hash_tables.h"
 #include "base/strings/string16.h"
 #include "base/strings/string_piece.h"  // For implicit conversions.
 #include "build/build_config.h"
@@ -129,7 +129,7 @@ namespace base {
 
 // An abstraction to isolate users from the differences between native
 // pathnames on different platforms.
-class BASE_EXPORT FilePath {
+class FilePath {
  public:
 #if defined(OS_POSIX)
   // On most platforms, native pathnames are char arrays, and the encoding
@@ -367,9 +367,6 @@ class BASE_EXPORT FilePath {
   // Similar to FromUTF8Unsafe, but accepts UTF-16 instead.
   static FilePath FromUTF16Unsafe(const string16& utf16);
 
-  void WriteToPickle(Pickle* pickle) const;
-  bool ReadFromPickle(PickleIterator* iter);
-
   // Normalize all path separators to backslash on Windows
   // (if FILE_PATH_USES_WIN_SEPARATORS is true), or do nothing on POSIX systems.
   FilePath NormalizePathSeparators() const;
@@ -435,8 +432,11 @@ class BASE_EXPORT FilePath {
 
 }  // namespace base
 
+#if 0
+//$$ see .cc comment.
 // This is required by googletest to print a readable output on test failures.
-BASE_EXPORT extern void PrintTo(const base::FilePath& path, std::ostream* out);
+extern void PrintTo(const base::FilePath& path, std::ostream* out);
+#endif
 
 // Macros for string literal initialization of FilePath::CharType[], and for
 // using a FilePath::CharType[] in a printf-style format string.
@@ -452,7 +452,7 @@ BASE_EXPORT extern void PrintTo(const base::FilePath& path, std::ostream* out);
 
 // Provide a hash function so that hash_sets and maps can contain FilePath
 // objects.
-namespace BASE_HASH_NAMESPACE {
+namespace std {
 
 template<>
 struct hash<base::FilePath> {

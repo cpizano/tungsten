@@ -7,15 +7,11 @@
 #include <string.h>
 #include <algorithm>
 
-#include "base/basictypes.h"
-#include "base/logging.h"
-#include "base/pickle.h"
-
 // These includes are just for the *Hack functions, and should be removed
 // when those functions are removed.
+#include "base/macros.h"
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
-#include "base/strings/sys_string_conversions.h"
 #include "base/strings/utf_string_conversions.h"
 
 #if defined(OS_MACOSX)
@@ -219,9 +215,6 @@ bool FilePath::IsSeparator(CharType character) {
 }
 
 void FilePath::GetComponents(std::vector<StringType>* components) const {
-  DCHECK(components);
-  if (!components)
-    return;
   components->clear();
   if (value().empty())
     return;
@@ -420,7 +413,7 @@ FilePath FilePath::InsertBeforeExtension(const StringType& suffix) const {
 
 FilePath FilePath::InsertBeforeExtensionASCII(const StringPiece& suffix)
     const {
-  DCHECK(IsStringASCII(suffix));
+//$$  DCHECK(IsStringASCII(suffix));
 #if defined(OS_WIN)
   return InsertBeforeExtension(ASCIIToUTF16(suffix.as_string()));
 #elif defined(OS_POSIX)
@@ -462,7 +455,7 @@ FilePath FilePath::ReplaceExtension(const StringType& extension) const {
 }
 
 bool FilePath::MatchesExtension(const StringType& extension) const {
-  DCHECK(extension.empty() || extension[0] == kExtensionSeparator);
+//$$  DCHECK(extension.empty() || extension[0] == kExtensionSeparator);
 
   StringType current_extension = Extension();
 
@@ -482,7 +475,7 @@ FilePath FilePath::Append(const StringType& component) const {
     appended = &without_nuls;
   }
 
-  DCHECK(!IsPathAbsolute(*appended));
+//$$  DCHECK(!IsPathAbsolute(*appended));
 
   if (path_.compare(kCurrentDirectory) == 0) {
     // Append normally doesn't do any normalization, but as a special case,
@@ -521,7 +514,7 @@ FilePath FilePath::Append(const FilePath& component) const {
 }
 
 FilePath FilePath::AppendASCII(const StringPiece& component) const {
-  DCHECK(base::IsStringASCII(component));
+//$$  DCHECK(base::IsStringASCII(component));
 #if defined(OS_WIN)
   return Append(ASCIIToUTF16(component.as_string()));
 #elif defined(OS_POSIX)
@@ -655,29 +648,6 @@ FilePath FilePath::FromUTF16Unsafe(const string16& utf16) {
   return FilePath(utf16);
 }
 #endif
-
-void FilePath::WriteToPickle(Pickle* pickle) const {
-#if defined(OS_WIN)
-  pickle->WriteString16(path_);
-#else
-  pickle->WriteString(path_);
-#endif
-}
-
-bool FilePath::ReadFromPickle(PickleIterator* iter) {
-#if defined(OS_WIN)
-  if (!iter->ReadString16(&path_))
-    return false;
-#else
-  if (!iter->ReadString(&path_))
-    return false;
-#endif
-
-  if (path_.find(kStringTerminator) != StringType::npos)
-    return false;
-
-  return true;
-}
 
 #if defined(OS_WIN)
 // Windows specific implementation of file string comparisons
@@ -1140,7 +1110,7 @@ inline int HFSReadNextNonIgnorableCodepoint(const char* string,
     // CBU8_NEXT returns a value < 0 in error cases. For purposes of string
     // comparison, we just use that value and flag it with DCHECK.
     CBU8_NEXT(string, *index, length, codepoint);
-    DCHECK_GT(codepoint, 0);
+//$$    DCHECK_GT(codepoint, 0);
     if (codepoint > 0) {
       // Check if there is a subtable for this upper byte.
       int lookup_offset = lower_case_table[codepoint >> 8];
@@ -1175,8 +1145,8 @@ int FilePath::HFSFastUnicodeCompare(const StringType& string1,
     if (codepoint1 != codepoint2)
       return (codepoint1 < codepoint2) ? -1 : 1;
     if (codepoint1 == 0) {
-      DCHECK_EQ(index1, length1);
-      DCHECK_EQ(index2, length2);
+//$$      DCHECK_EQ(index1, length1);
+//$$      DCHECK_EQ(index2, length2);
       return 0;
     }
   }
@@ -1195,7 +1165,9 @@ StringType FilePath::GetHFSDecomposedForm(const StringType& string) {
   // will overestimate the required space. The return value also already
   // includes the space needed for a terminating 0.
   CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(cfstring);
-  DCHECK_GT(length, 0);  // should be at least 1 for the 0-terminator.
+//$$  DCHECK_GT(length, 0);  
+  // should be at least 1 for the 0-terminator.
+
   // Reserve enough space for CFStringGetFileSystemRepresentation to write into.
   // Also set the length to the maximum so that we can shrink it later.
   // (Increasing rather than decreasing it would clobber the string contents!)
@@ -1299,8 +1271,8 @@ FilePath FilePath::NormalizePathSeparators() const {
 
 FilePath FilePath::NormalizePathSeparatorsTo(CharType separator) const {
 #if defined(FILE_PATH_USES_WIN_SEPARATORS)
-  DCHECK_NE(kSeparators + kSeparatorsLength,
-            std::find(kSeparators, kSeparators + kSeparatorsLength, separator));
+//$$  DCHECK_NE(kSeparators + kSeparatorsLength,
+//$$            std::find(kSeparators, kSeparators + kSeparatorsLength, separator));
   StringType copy = path_;
   for (size_t i = 0; i < kSeparatorsLength; ++i) {
     std::replace(copy.begin(), copy.end(), kSeparators[i], separator);
@@ -1319,6 +1291,10 @@ bool FilePath::IsContentUri() const {
 
 }  // namespace base
 
+#if 0
+//$$ this seems wrong. The |ostream| itself does not have string and wstring
+// overloads and <string> defines << but for std::basic_ostream<CharT, Traits>. 
 void PrintTo(const base::FilePath& path, std::ostream* out) {
   *out << path.value();
 }
+#endif
