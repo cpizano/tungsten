@@ -18,11 +18,10 @@
 #include <algorithm>
 #include <vector>
 
-#include "base/basictypes.h"
-#include "base/logging.h"
-#include "base/memory/singleton.h"
+#include "base/macros.h"
 #include "base/strings/utf_string_conversion_utils.h"
 #include "base/strings/utf_string_conversions.h"
+
 #include "base/third_party/icu/icu_utf.h"
 #include "build/build_config.h"
 
@@ -41,7 +40,11 @@ struct EmptyStrings {
   const string16 s16;
 
   static EmptyStrings* GetInstance() {
-    return Singleton<EmptyStrings>::get();
+    static EmptyStrings es;
+    //$$ fix this, problably moving this to the dll init().
+    //it was --> return Singleton<EmptyStrings>::get();
+    // but really, what the hell?
+    return &es;
   }
 };
 
@@ -242,15 +245,14 @@ bool TrimString(const std::string& input,
 void TruncateUTF8ToByteSize(const std::string& input,
                             const size_t byte_size,
                             std::string* output) {
-  DCHECK(output);
   if (byte_size > input.length()) {
     *output = input;
     return;
   }
-  DCHECK_LE(byte_size, static_cast<uint32>(kint32max));
+//$$  DCHECK_LE(byte_size, static_cast<uint32_t>(kint32max));
   // Note: This cast is necessary because CBU8_NEXT uses int32s.
-  int32 truncation_length = static_cast<int32>(byte_size);
-  int32 char_index = truncation_length - 1;
+  int32_t truncation_length = static_cast<int32_t>(byte_size);
+  int32_t char_index = truncation_length - 1;
   const char* data = input.data();
 
   // Using CBU8, we will move backwards from the truncation point
@@ -258,7 +260,7 @@ void TruncateUTF8ToByteSize(const std::string& input,
   // character.  Once a full UTF8 character is found, we will
   // truncate the string to the end of that character.
   while (char_index >= 0) {
-    int32 prev = char_index;
+    int32_t prev = char_index;
     base_icu::UChar32 code_point = 0;
     CBU8_NEXT(data, char_index, truncation_length, code_point);
     if (!IsValidCharacter(code_point) ||
@@ -408,11 +410,11 @@ bool IsStringASCII(const std::wstring& str) {
 
 bool IsStringUTF8(const StringPiece& str) {
   const char *src = str.data();
-  int32 src_len = static_cast<int32>(str.length());
-  int32 char_index = 0;
+  int32_t src_len = static_cast<int32_t>(str.length());
+  int32_t char_index = 0;
 
   while (char_index < src_len) {
-    int32 code_point;
+    int32_t code_point;
     CBU8_NEXT(src, char_index, src_len, code_point);
     if (!IsValidCharacter(code_point))
       return false;
@@ -534,7 +536,7 @@ static const char* const kByteStringsUnlocalized[] = {
   " PB"
 };
 
-string16 FormatBytesUnlocalized(int64 bytes) {
+string16 FormatBytesUnlocalized(int64_t bytes) {
   double unit_amount = static_cast<double>(bytes);
   size_t dimension = 0;
   const int kKilo = 1024;
@@ -563,7 +565,7 @@ void DoReplaceSubstringsAfterOffset(StringType* str,
                                     const StringType& find_this,
                                     const StringType& replace_with,
                                     bool replace_all) {
-  DCHECK(!find_this.empty());
+//$$  DCHECK(!find_this.empty());
 
   // If the find string doesn't appear, there's nothing to do.
   offset = str->find(find_this, offset);
@@ -783,7 +785,7 @@ OutStringType DoReplaceStringPlaceholders(const FormatStringType& format_string,
     if ('$' == *i) {
       if (i + 1 != format_string.end()) {
         ++i;
-        DCHECK('$' == *i || '1' <= *i) << "Invalid placeholder: " << *i;
+//$$        DCHECK('$' == *i || '1' <= *i) << "Invalid placeholder: " << *i;
         if ('$' == *i) {
           while (i != format_string.end() && '$' == *i) {
             formatted.push_back('$');
@@ -845,7 +847,7 @@ string16 ReplaceStringPlaceholders(const string16& format_string,
   subst.push_back(a);
   string16 result = ReplaceStringPlaceholders(format_string, subst, &offsets);
 
-  DCHECK_EQ(1U, offsets.size());
+//$$  DCHECK_EQ(1U, offsets.size());
   if (offset)
     *offset = offsets[0];
   return result;
