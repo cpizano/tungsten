@@ -2,6 +2,7 @@ shared_library("base_dyn") {
   sources = [
     "dll/base.cc",
     "dll/base_exports.h",
+    "dll/strings.cc",
   ]
 }
 
